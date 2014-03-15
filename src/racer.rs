@@ -10,11 +10,17 @@ pub fn getline(fname : &str, linenum : uint) -> ~str {
     let path = Path::new(fname);
     let mut i = 0;
     let mut file = BufferedReader::new(File::open(&path));
-    for line in file.lines() {
+    for mline in file.lines() {
         //print!("{}", line);
+        let line = match mline {
+            Ok(_l) => _l,
+            Err(_) => return ~"not found"
+        };
+        // let foo: f64 = line.to_owned();
+        // let bar: f64 = line;
         i += 1;
         if i == linenum {
-            return line.to_owned();
+            return line;
         }
     }
     return ~"not found";
@@ -78,8 +84,12 @@ fn find_in_module(path : &Path, s : &str, outputfn : &|&str,uint,&Path,&str|) {
     let structsearchstr = "struct ";
     let cratesearchstr = "extern crate ";
     let mut i = 0;
-    for line in file.lines() {
+    for mline in file.lines() {
         i += 1;
+        let line = match mline {
+            Ok(_l) => _l,
+            Err(_) => ~""
+        };
         match line.find_str(modsearchstr+s) {
             Some(n) => {
                 let end = find_end(line, n+modsearchstr.len());
@@ -156,8 +166,12 @@ fn search_f(path: &Path, p: &[&str], outputfn: &|&str,uint,&Path,&str|) {
     let mut file = BufferedReader::new(File::open(path));
     let modsearchstr = "mod ";
     let mut i = 0;
-    for line in file.lines() {
+    for mline in file.lines() {
         i+=1;
+        let line = match mline {
+            Ok(_l) => _l,
+            Err(_) => ~""
+        };
         match line.find_str(modsearchstr + p[0]) {
             Some(n) => {
                 let end = find_end(line, n+modsearchstr.len());
@@ -182,7 +196,11 @@ fn search_f(path: &Path, p: &[&str], outputfn: &|&str,uint,&Path,&str|) {
 
 fn search_use_imports(path : &Path, p : &[&str], f : &|&str,uint,&Path,&str|) {
     let mut file = BufferedReader::new(File::open(path));
-    for line in file.lines() {
+    for mline in file.lines() {
+        let line = match mline {
+            Ok(_l) => _l,
+            Err(_) => ~""
+        };
         match line.find_str("use ") {
             Some(_) => {
                 let mut s = line.slice_from(4).trim();
@@ -214,7 +232,11 @@ fn search_crates(path : &Path, p : &[&str], outputfn : &|&str,uint,&Path,&str|) 
     }
 
     let mut file = BufferedReader::new(File::open(path));
-    for line in file.lines() {
+    for mline in file.lines() {
+        let line = match mline {
+            Ok(_l) => _l,
+            Err(_) => ~""
+        };
         let searchstr = "extern crate ";
         match line.find_str(searchstr+p[0]) {
             Some(n) => {
