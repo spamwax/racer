@@ -79,30 +79,16 @@ fn main() {
     }
 
     let command = args[1];
-    // let foo: f64 = command;
-    let foo = ~"prefix";
-    let bar = ~"complete";
-    let dar = ~"help";
-    if command == ~"prefix" {
-        prefix();
-    } else if command == ~"complete" {
-        complete();
-    } else if command == ~"help" {
-        print_usage()
-    } else {
-        println!("Sorry, I didn't understand command {}", command ); 
-        print_usage(); 
-        return;
+    
+    match command.as_slice() {
+        "prefix" => prefix(),
+        "complete" => complete(),
+        "help" => print_usage(),
+        _ => { 
+            println!("Sorry, I didn't understand command {}", command ); 
+            print_usage(); 
+            return;
+        }
     }
-    // match command {
-    //     // foo => prefix(),
-    //     // bar => complete(),
-    //     // dar => print_usage(),
-    //     _ => { 
-    //         println!("Sorry, I didn't understand command {}", command ); 
-    //         print_usage(); 
-    //         return;
-    //     }
-    // }
  }
 
